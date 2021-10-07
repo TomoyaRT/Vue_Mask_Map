@@ -24,6 +24,7 @@ export default {
   <div
     class="
       sidebar-btn
+      cursor-pointer
       position-fixed
       start-0
       btn-primary
@@ -70,17 +71,19 @@ export default {
         <!-- 搜尋與篩選 -->
         <div class="col-12">
           <!-- 搜尋框 -->
-          <input
-            type="text"
-            class="form-control rounded-pill border-primary"
-            placeholder="搜尋區域 , 地址 , 藥局"
-            aria-label="search-key-words"
-          >
+          <div class="input-group flex-nowrap">
+            <input type="text" class="form-control" placeholder="搜尋區域 , 地址 , 藥局" aria-label="Username" aria-describedby="addon-wrapping">
+            <span class="input-group-text bg-secondary text-white cursor-pointer" id="addon-wrapping">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+            </span>
+          </div>
           <!-- 篩選按鈕 -->
           <div class="d-flex mt-3 justify-content-around">
             <button
               type="button"
-              class="btn border-primary"
+              class="btn border-secondary"
               :class="{'btn-active': filterBtn === 'all'}"
               @click="filterBtn = 'all'"
             >
@@ -88,7 +91,7 @@ export default {
             </button>
             <button
               type="button"
-              class="btn border-primary"
+              class="btn border-secondary"
               :class="{'btn-active': filterBtn === 'adult'}"
               @click="filterBtn = 'adult'"
             >
@@ -96,7 +99,7 @@ export default {
             </button>
             <button
               type="button"
-              class="btn border-primary"
+              class="btn border-secondary"
               :class="{'btn-active': filterBtn === 'child'}"
               @click="filterBtn = 'child'"
             >
@@ -129,6 +132,9 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.cursor-pointer {
+  cursor: pointer;
+}
 .sidebar-btn {
   top: 6em;
   z-index: 1000;
@@ -145,7 +151,7 @@ export default {
   transform: translateX(-100%);
 }
 .btn-active {
-  background-color: #139fb4;
+  background-color: #FD9843;
   color: #ffffff;
 }
 

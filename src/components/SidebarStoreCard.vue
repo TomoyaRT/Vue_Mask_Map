@@ -3,7 +3,13 @@ export default {};
 </script>
 
 <template>
-  <div class="container-fuild border mb-4 store-card-box-shadow store-card-border-radius">
+  <div class="container-fuild border mb-4 store-card-box-shadow store-card-border-radius position-relative">
+    <span class="position-absolute top-1 end-1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-geo-alt-fill location-icon-color" viewBox="0 0 16 16">
+        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+      </svg>
+    </span>
+
     <div class="row">
       <div class="col-12 fs-4 text-store-name fw-bold mx-3 mb-2 mt-3">金宏仁藥局</div>
       <div class="col-12 mx-3 mb-2">
@@ -112,5 +118,9 @@ export default {};
 }
 .store-card-bottom-padding {
   padding: .8rem 0;
+}
+.location-icon-color {
+  cursor: pointer;
+  color: #FFC107;
 }
 </style>

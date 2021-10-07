@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/functions";
 $primary: #0c8da1;
+$secondary: #FD9843;
 
 
 
@@ -28,6 +29,7 @@ $utilities-bg-colors: map-merge($utilities-bg-colors,
   (
     "overlay": #343a40,
     "mask-num": #0BA29C,
+    "search-btn": $orange-400,
   ));
 
 

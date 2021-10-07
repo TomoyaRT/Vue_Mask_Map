@@ -29,23 +29,23 @@ export default {
     :class="{ 'close-overlay': !overlayStatus }"
   >
     <div class="w-95 w-sm-85 d-flex flex-column align-items-center">
-      <div class="mw-400px text-gray-400">
+      <div class="mw-400px text-gray-400 mb-4">
         <div class="text-center mb-3 fs-4 text-white">口罩地圖</div>
         <ul>
           <li>
-            右上角
+            <span>右上角</span>
             <img src="../assets/icon/locate-icon.svg" width="30" />
-            可以自動定位並搜尋附近藥局
+            <span>可以自動定位並搜尋附近藥局</span>
           </li>
-          <li>可以自動定位並搜尋附近藥局</li>
-          <li>
+          <li class="mb-2">可以自動定位並搜尋附近藥局</li>
+          <li class="mb-2">
             依照藥局的庫存量在地圖上顯示
             <span class="text-success me-1">不</span>
             <span class="text-danger me-1">同</span>
             <span class="text-warning me-1">顏</span>
             <span class="text-white-50 me-1">色</span>
             的標記
-            <ul>
+            <ul class="mt-1">
               <li>
                 <img src="../assets/icon/more-icon.svg" width="16" /> 充足
               </li>
@@ -60,7 +60,7 @@ export default {
               </li>
             </ul>
           </li>
-          <li>略微改善了搜尋方式，以減少載入資料的時間</li>
+          <li class="mb-2">略微改善了搜尋方式，以減少載入資料的時間</li>
           <li>支援手機介面</li>
         </ul>
         <div class="text-center mb-2">
