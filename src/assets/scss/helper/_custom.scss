@@ -1,0 +1,74 @@
+@import "~bootstrap/scss/functions";
+$primary: #0c8da1;
+
+
+
+@import "~bootstrap/scss/variables";
+$font-sizes: map-merge(
+  $font-sizes,
+  (
+    lg: $font-size-base * 3,
+    7: $font-size-base * 0.9,
+    8: $font-size-base * 0.8,
+    9: $font-size-base * 0.7,
+  )
+);
+
+$utilities-text-colors: map-merge($utilities-text-colors,
+  (
+    "gray-400": $gray-400,
+    "gray-500": $gray-500,
+    "gray-600": $gray-600,
+    "gray-700": $gray-700,
+    "orange-400": $orange-400,
+    "store-name": #0BA29C,
+  ));
+
+$utilities-bg-colors: map-merge($utilities-bg-colors,
+  (
+    "overlay": #343a40,
+    "mask-num": #0BA29C,
+  ));
+
+
+
+@import "~bootstrap/scss/utilities";
+$utilities: map-merge($utilities,
+  (
+    "width": map-merge(map-get($utilities, "width"),
+      (responsive: true,
+        values: map-merge(map-get(map-get($utilities, "width"), "values"),
+          (
+            "85": 85%,
+            "95": 95%,
+          )),
+      )),
+    "max-width": map-merge(map-get($utilities, "max-width"),
+      (responsive: true,
+        values: map-merge(map-get(map-get($utilities, "max-width"), "values"),
+          (
+            "400px": 400px,
+          )),
+      )),
+    "top": map-merge(map-get($utilities, "top"),
+      (responsive: true,
+        values: map-merge(map-get(map-get($utilities, "top"), "values"),
+          (
+            "1": 1em,
+            "2": 1.5em,
+          )),
+      )),
+    "end": map-merge(map-get($utilities, "end"),
+      (responsive: true,
+        values: map-merge(map-get(map-get($utilities, "end"), "values"),
+          (
+            "1": 1em,
+            "2": 1.5em,
+            "3": 2em,
+          )),
+      )),
+  ));
+
+
+
+@import "~bootstrap/scss/bootstrap";

@@ -1,26 +1,31 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import InstructionsForUse from "./components/InstructionsForUse.vue";
+import UserLocation from "./components/UserLocation.vue";
+import MaskMap from "./components/MaskMap.vue";
+import Sidebar from "./components/Sidebar.vue";
+
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    InstructionsForUse,
+    UserLocation,
+    MaskMap,
+    Sidebar,
   }
+
 }
 </script>
 
+<template>
+    <InstructionsForUse />
+    <UserLocation />
+    <MaskMap />
+    <Sidebar />
+</template>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+@import "assets/scss/main.scss";
+* {
+  font-family: 'Noto Sans TC', sans-serif;
 }
 </style>
