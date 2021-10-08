@@ -50,10 +50,10 @@ export default {
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalLabel">延吉大藥局</h5>
           <button
             type="button"
             class="btn-close"
@@ -61,16 +61,54 @@ export default {
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">...</div>
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+        <div class="modal-body">
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">營業時間</th>
+                <th scope="col">一</th>
+                <th scope="col">二</th>
+                <th scope="col">三</th>
+                <th scope="col">四</th>
+                <th scope="col">五</th>
+                <th scope="col">六</th>
+                <th scope="col">日</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">上午</th>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>x</td>
+              </tr>
+              <tr>
+                <th scope="row">下午</th>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>x</td>
+              </tr>
+              <tr>
+                <th scope="row">晚上</th>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>o</td>
+                <td>x</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
