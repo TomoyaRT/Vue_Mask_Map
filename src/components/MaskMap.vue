@@ -1,63 +1,51 @@
 <script>
-import { onMounted, inject } from "vue";
+import { onMounted, computed, watch } from "vue";
+import { useStore } from "vuex";
 import L from "leaflet";
 import "leaflet.markercluster";
+import { getIconColor } from "../methods/setIconColor";
 
 export default {
   setup() {
-    const axios = inject("axios");
+    const store = useStore();
 
     /**
-     * 取得遠端API資料
+     * 觸發 領口罩的藥局分布資料 API
      */
     const getMaskStores = () => {
-      axios
-        .get(
-          "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json"
-        )
-        .then((res) => {
-          console.log(res.data.features);
-          setMaskStores(res.data.features);
+      store.dispatch("getMaskStores").then((res) => {
+        if (res.status === 200) {
+          setInitMaskStores();
+        }
+      });
+    };
 
-        })
-        .catch((err) => {
-          console.error(err.response);
-        });
+    /**
+     * 初始化地圖 (預設經緯度地點)
+     */
+    const setInitMaskStores = () => {
+      store.dispatch("searchMaskStores", "臺北市");
     };
 
     /**
      * 設定地圖
      */
-    const setMaskStores = (data) => {
-      let map = {};
+    const setMaskStores = (data, map) => {
+      map.setView([25.052137, 121.555235], 13);
 
-      map = L.map("map", {
-        center: [25.052137, 121.555235],
-        zoom: 10,
-      });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 18,
-      }).addTo(map);
-
-      let greenIcon = new L.Icon({
-        iconUrl:
-          "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-        shadowUrl:
-          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41],
-      });
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      ).addTo(map);
 
       var markers = new L.MarkerClusterGroup().addTo(map);
 
       for (let i = 0; data.length > i; i++) {
         markers.addLayer(
-          L.marker([data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]], { icon: greenIcon })
-            .bindPopup(
-              `
+          L.marker(
+            [data[i].geometry.coordinates[1], data[i].geometry.coordinates[0]],
+            { icon: getIconColor("orange") }
+          ).bindPopup(
+            `
               <h3 class="fs-4 fw-bold mb-2">${data[i].properties.name}</h3>
               <p class="fs-8 m-0 mb-1">地址 | ${data[i].properties.address}</p>
               <p class="fs-8 m-0 mb-1">連絡電話 | ${data[i].properties.phone}</p>
@@ -72,7 +60,7 @@ export default {
               <a href="https://www.google.com/maps/search/${data[i].properties.name}/@${data[i].geometry.coordinates[1]},${data[i].geometry.coordinates[0]}" target="_blank"
                 class="btn btn-success text-white w-100"> Google 路線導航
               `
-            )
+          )
         );
       }
       map.addLayer(markers);
@@ -80,6 +68,20 @@ export default {
 
     onMounted(() => {
       getMaskStores();
+
+      const map = L.map("map");
+
+      const data = computed(() => {
+        return store.getters.getMaskStores;
+      });
+
+      watch(data, (nVal, oVal) => {
+        if (nVal !== oVal) {
+          console.log(map);
+          setMaskStores(data.value, map);
+        }
+        return;
+      });
     });
 
     return {};

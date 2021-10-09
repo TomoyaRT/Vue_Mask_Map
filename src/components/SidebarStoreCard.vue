@@ -1,9 +1,27 @@
 <script>
-export default {};
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+export default {
+  setup() {
+    const store = useStore();
+
+    /**
+     * 取得領口罩的藥局分布資料
+     */
+    const maskStores = computed(() => {
+      return store.getters.getMaskStores;
+    })
+
+    return {
+      maskStores,
+    }
+  }
+};
 </script>
 
 <template>
-  <div class="container-fuild border mb-4 store-card-box-shadow store-card-border-radius position-relative">
+  <div class="container-fuild border store-card-box-shadow store-card-border-radius position-relative mb-4" v-for="store in maskStores" :key="store.properties.id">
     <span class="position-absolute top-1 end-1">
       <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-geo-alt-fill location-icon-color" viewBox="0 0 16 16">
         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
@@ -11,8 +29,9 @@ export default {};
     </span>
 
     <div class="row">
-      <div class="col-12 fs-4 text-store-name fw-bold mx-3 mb-2 mt-3">金宏仁藥局</div>
-      <div class="col-12 mx-3 mb-2">
+      <div class="col-12 px-4"></div>
+      <div class="col-12 fs-4 text-store-name fw-bold px-4 pb-2 pt-3">{{ store.properties.name }}</div>
+      <div class="col-12 px-4 pb-2">
         <svg
           data-v-ca0da258=""
           viewBox="0 0 16 16"
@@ -38,9 +57,9 @@ export default {};
             ></path>
           </g>
         </svg>
-        <span class="ms-2 text-gray-600">(02) 24982402</span>
+        <span class="ms-2 text-gray-600">{{ store.properties.phone }}</span>
       </div>
-      <div class="col-12 mx-3 mb-2">
+      <div class="col-12 px-4 pb-2">
         <svg
           data-v-ca0da258=""
           viewBox="0 0 16 16"
@@ -66,9 +85,9 @@ export default {};
             ></path>
           </g>
         </svg>
-        <span class="ms-2 text-gray-600">新北市金山區中山路190巷2號</span>
+        <span class="ms-2 text-gray-600">{{ store.properties.address }}</span>
       </div>
-      <div class="col-12 mx-3 mb-2">
+      <div class="col-12 px-4 pb-2">
         <svg
           data-v-ca0da258=""
           viewBox="0 0 16 16"
@@ -94,12 +113,12 @@ export default {};
             ></path>
           </g>
         </svg>
-        <span class="ms-2 text-gray-600">口罩販售時段: 早上八點至售完為止</span>
+        <span class="ms-2 text-gray-600">{{ store.properties.note }}</span>
       </div>
       <div class="col-12">
         <div class="bg-mask-num store-card-bottom-border-radius">
-          <span class="w-50 d-inline-block text-center store-card-bottom-padding border-end border-dark text-white">成人 930</span>
-          <span class="w-50 d-inline-block text-center store-card-bottom-padding text-white">兒童 1990</span>
+          <span class="w-50 d-inline-block text-center store-card-bottom-padding border-end border-dark text-white">成人 {{ store.properties.mask_adult }}</span>
+          <span class="w-50 d-inline-block text-center store-card-bottom-padding text-white">兒童 {{ store.properties.mask_child }}</span>
         </div>
       </div>
     </div>
