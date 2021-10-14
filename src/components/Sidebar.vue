@@ -1,5 +1,5 @@
 <script>
-import { ref } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useStore } from "vuex";
 
 import SidebarStoreCard from "../components/SidebarStoreCard.vue";
@@ -13,6 +13,77 @@ export default {
     const sidebarStatus = ref(false);
     const filterBtn = ref('all');
     const searchText = ref('');
+    let arr = ref([]);
+    let num = 0;
+    let loading = ref(false);
+    const currentDate = ref(
+    `
+      今天日期是 ${new Date().getFullYear()}
+      年 ${new Date().getMonth()+1}
+      月 ${new Date().getDate()}
+      日
+    `);
+
+    const canBuyMasksNum = computed(() => {
+      const today = new Date().getDay();
+      return today % 2 === 0 ? "2、4、6、8、0" : "1、3、5、7、9";
+    })
+
+    /**
+     * 取得 口罩藥局的資料
+     */
+    const maskStores = computed(() => {
+      return store.getters.getCurrentMaskStores;
+    })
+
+    // 監聽 口罩藥局的資料
+    watch(maskStores, () => {
+      // observer.unobserve(listEnd);
+      num = 0;
+      arr.value = maskStores.value.slice(0, num);
+      test()
+    })
+
+    // IntersectionObserver 監聽
+    const test = () => {
+      const listEnd = document.querySelector('.list-end');
+      let options = { threshold: 0 };
+      // 觸發時的事件
+      let callback = (entries, observer) => {
+        // 監聽每一個目標元素
+        entries.forEach(entry => {
+          // 口罩藥局的資料
+          const stores = store.getters.getCurrentMaskStores;
+          // 資料長度 > 10
+          if (entry.isIntersecting && stores.length - num > 10 && loading.value === false ) {
+            loading.value = true;
+            setTimeout(() => {
+              loading.value = false;
+              num += 10;
+              arr.value = stores.slice(0, num);
+            }, 1000);
+          }
+
+          // 資料長度 < 10
+          if (entry.isIntersecting && stores.length - num < 10 && loading.value === false) {
+            loading.value = true;
+            setTimeout(() => {
+              loading.value = false;
+              arr.value = stores.slice(0, stores.length - num);
+              observer.unobserve(listEnd);
+            }, 1000);
+          }
+        })
+      }
+      // 綁定觸發的事件與設定
+      let observer = new IntersectionObserver(callback, options)
+      // 綁定監聽的元素
+      observer.observe(listEnd);
+    }
+
+    onMounted(() => {
+      test()
+    })
 
     /**
      * 篩選口罩類型
@@ -22,21 +93,35 @@ export default {
       store.dispatch("filterMaskStores", status);
     }
 
-
     /**
      * 搜尋關鍵字
      */
     const searchMaskStores = () => {
-      store.dispatch("searchMaskStores", searchText.value);
-    }
+      let value = searchText.value;
 
+      // 當搜尋框為 空值
+      if (value === '') { alert('搜尋框不可為空'); return }
+
+      // 當搜尋框輸入 數字、英文、中文 以外的值
+      const regex = /^[a-zA-Z0-9\u4e00-\u9fa5]*$/g;
+      if (!regex.test(value)) { alert('搜尋框只可填入數字、英文、中文'); return }
+
+      // 使用者搜尋 台，直接將它轉成 臺。
+      if (value.includes('台')) value = value.replace('台', '臺');
+
+      store.dispatch("searchMaskStores", value);
+    }
 
     return {
       sidebarStatus,
       filterBtn,
       searchText,
       filterMaskStores,
-      searchMaskStores
+      searchMaskStores,
+      arr,
+      loading,
+      currentDate,
+      canBuyMasksNum
     };
   },
 };
@@ -71,7 +156,7 @@ export default {
         >
           <div class="fs-4 fw-bold">
             口罩地圖
-            <span class="fs-8 fw-normal text-gray-500">資料更新於 : 0 秒前</span>
+            <span class="fs-8 fw-normal text-gray-500 ms-2">{{ currentDate }}</span>
           </div>
           <button
             type="button"
@@ -86,7 +171,7 @@ export default {
             <div class="text-primary fs-4 fw-bold mb-1">貼心小提醒</div>
             <div class="text-gray-700 mb-1">今天是身分證末一碼為</div>
             <div class="text-orange mb-1 fs-5">
-              「<span class="text-orange-400 fw-bold"> 2、4、6、8、0</span>」
+              「<span class="text-orange-400 fw-bold">{{ canBuyMasksNum }}</span>」
             </div>
             <div class="text-gray-700 mb-1">的民眾才能購買口罩哦 !</div>
           </div>
@@ -95,7 +180,7 @@ export default {
         <div class="col-12">
           <!-- 搜尋框 -->
           <div class="input-group flex-nowrap">
-            <input type="text" class="form-control" v-model="searchText" placeholder="搜尋區域 , 地址 , 藥局" aria-describedby="addon-wrapping">
+            <input type="text" class="form-control" v-model.trim="searchText" placeholder="搜尋區域 , 地址 , 藥局" aria-describedby="addon-wrapping">
             <span class="input-group-text bg-secondary text-white cursor-pointer" id="addon-wrapping" @click="searchMaskStores">
               <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
@@ -133,12 +218,18 @@ export default {
 
       </div>
     </div>
-
     <!-- Sidebar 下半部 -->
     <div class="container-fuild p-3 store-group-container">
       <div class="row">
         <div class="col-12">
-          <SidebarStoreCard />
+          <SidebarStoreCard :maskStores="arr" />
+          <div class="text-center" v-if="loading">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div v-if="arr.length === 0 && !loading">這個區域現在沒有資料 (^～^;)</div>
+          <div class="list-end"></div>
         </div>
       </div>
     </div>

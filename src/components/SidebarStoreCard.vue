@@ -1,36 +1,67 @@
 <script>
-import { computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
-  setup() {
+  props: {
+    maskStores: {
+      type: Array,
+      default: () => [],
+    }
+  },
+  setup(props) {
     const store = useStore();
 
-    /**
-     * 取得領口罩的藥局分布資料
-     */
-    const maskStores = computed(() => {
-      return store.getters.getMaskStores;
-    })
+    // 儲存當前選擇的座標
+    const flyToCoordinates = (lgn, lat) => {
+      store.dispatch("setCoordinates", [lgn, lat]);
+    };
 
     return {
-      maskStores,
-    }
-  }
+      props,
+      flyToCoordinates,
+    };
+  },
 };
 </script>
 
 <template>
-  <div class="container-fuild border store-card-box-shadow store-card-border-radius position-relative mb-4" v-for="store in maskStores" :key="store.properties.id">
+  <div
+    class="
+      container-fuild
+      border
+      store-card-box-shadow store-card-border-radius
+      position-relative
+      mb-4
+    "
+    v-for="store in props.maskStores"
+    :key="store.properties.id"
+  >
     <span class="position-absolute top-1 end-1">
-      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-geo-alt-fill location-icon-color" viewBox="0 0 16 16">
-        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+      <svg
+        @click="
+          flyToCoordinates(
+            store.geometry.coordinates[1],
+            store.geometry.coordinates[0]
+          )
+        "
+        xmlns="http://www.w3.org/2000/svg"
+        width="25"
+        height="25"
+        fill="currentColor"
+        class="bi bi-geo-alt-fill location-icon-color"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
+        />
       </svg>
     </span>
 
     <div class="row">
       <div class="col-12 px-4"></div>
-      <div class="col-12 fs-4 text-store-name fw-bold px-4 pb-2 pt-3">{{ store.properties.name }}</div>
+      <div class="col-12 fs-3 text-store-name fw-bold px-4 pb-2 pt-3">
+        {{ store.properties.name }}
+      </div>
       <div class="col-12 px-4 pb-2">
         <svg
           data-v-ca0da258=""
@@ -57,7 +88,7 @@ export default {
             ></path>
           </g>
         </svg>
-        <span class="ms-2 text-gray-600">{{ store.properties.phone }}</span>
+        <span class="ms-2 text-gray-600 fs-7">{{ store.properties.phone }}</span>
       </div>
       <div class="col-12 px-4 pb-2">
         <svg
@@ -85,40 +116,33 @@ export default {
             ></path>
           </g>
         </svg>
-        <span class="ms-2 text-gray-600">{{ store.properties.address }}</span>
-      </div>
-      <div class="col-12 px-4 pb-2">
-        <svg
-          data-v-ca0da258=""
-          viewBox="0 0 16 16"
-          width="1em"
-          height="1em"
-          focusable="false"
-          role="img"
-          alt="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          class="bi-calendar align-middle b-icon bi text-gray-600"
-        >
-          <g data-v-ca0da258="">
-            <path
-              fill-rule="evenodd"
-              d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"
-              clip-rule="evenodd"
-            ></path>
-            <path
-              fill-rule="evenodd"
-              d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z"
-              clip-rule="evenodd"
-            ></path>
-          </g>
-        </svg>
-        <span class="ms-2 text-gray-600">{{ store.properties.note }}</span>
+        <span class="ms-2 text-gray-600 fs-7">{{ store.properties.address }}</span>
       </div>
       <div class="col-12">
         <div class="bg-mask-num store-card-bottom-border-radius">
-          <span class="w-50 d-inline-block text-center store-card-bottom-padding border-end border-dark text-white">成人 {{ store.properties.mask_adult }}</span>
-          <span class="w-50 d-inline-block text-center store-card-bottom-padding text-white">兒童 {{ store.properties.mask_child }}</span>
+          <span
+            class="
+              w-50
+              fw-bold
+              d-inline-block
+              text-center
+              store-card-bottom-padding
+              border-end border-dark
+              text-white
+            "
+            >成人 {{ store.properties.mask_adult }}</span
+          >
+          <span
+            class="
+              w-50
+              fw-bold
+              d-inline-block
+              text-center
+              store-card-bottom-padding
+              text-white
+            "
+            >兒童 {{ store.properties.mask_child }}</span
+          >
         </div>
       </div>
     </div>
@@ -136,10 +160,10 @@ export default {
   border-radius: 0px 0px 15px 15px;
 }
 .store-card-bottom-padding {
-  padding: .8rem 0;
+  padding: 0.8rem 0;
 }
 .location-icon-color {
   cursor: pointer;
-  color: #FFC107;
+  color: #ffc107;
 }
 </style>
