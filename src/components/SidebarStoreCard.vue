@@ -1,4 +1,5 @@
 <script>
+import { computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -10,14 +11,19 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const stores = computed(() => {
+      return props.maskStores;
+    })
 
     // 儲存當前選擇的座標
     const flyToCoordinates = (lgn, lat) => {
       store.dispatch("setCoordinates", [lgn, lat]);
+      store.dispatch("setCoordinatesSource", "store");
+      store.dispatch("setSidebarStatus", false);
     };
 
     return {
-      props,
+      stores,
       flyToCoordinates,
     };
   },
@@ -33,7 +39,7 @@ export default {
       position-relative
       mb-4
     "
-    v-for="store in props.maskStores"
+    v-for="store in stores"
     :key="store.properties.id"
   >
     <span class="position-absolute top-1 end-1">
