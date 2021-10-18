@@ -1,5 +1,5 @@
 <script>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 
 import SidebarStoreCard from "../components/SidebarStoreCard.vue";
@@ -10,13 +10,14 @@ export default {
   },
   setup() {
     const store = useStore();
-    const sidebarStatus = ref(false);
-    const filterBtn = ref('all');
-    const searchText = ref('');
-    let arr = ref([]);
-    let num = 0;
-    let loading = ref(false);
-    const currentDate = ref(
+    const filterBtnStatus = ref('all');
+    const searchValue = ref('');
+    const errorMsg = ref('');
+    const searchResult = ref(false);
+    let renderStoresData = ref([]);
+    let renderStoresNum = 0;
+    let loadingStatus = ref(false);
+    const today = ref(
     `
       今天日期是 ${new Date().getFullYear()}
       年 ${new Date().getMonth()+1}
@@ -24,72 +25,83 @@ export default {
       日
     `);
 
-    const canBuyMasksNum = computed(() => {
-      const today = new Date().getDay();
-      return today % 2 === 0 ? "2、4、6、8、0" : "1、3、5、7、9";
+    /**
+     * 取得 sidebar狀態
+     */
+    const sidebarStatus = computed(() => {
+      return store.getters.getSidebarStatus;
     })
 
     /**
+     * sidebar控制器
+     */
+    const sidebarController = (status) => {
+      store.dispatch("setSidebarStatus", status);
+    }
+
+     /**
      * 取得 口罩藥局的資料
      */
     const maskStores = computed(() => {
-      return store.getters.getCurrentMaskStores;
+      return store.getters.getRenderMaskStores;
     })
 
     // 監聽 口罩藥局的資料
     watch(maskStores, () => {
-      // observer.unobserve(listEnd);
-      num = 0;
-      arr.value = maskStores.value.slice(0, num);
-      test()
+      // 若查無資料
+      searchResult.value = maskStores.value.length === 0 ? true : false;
+      renderStoresNum = 0; // 重置呈現藥局數量的極限值
+      renderStoresData.value = maskStores.value.slice(0, renderStoresNum); // 資料狀態改變時，顯示Loading
+      infiniteScroll();
     })
 
-    // IntersectionObserver 監聽
-    const test = () => {
-      const listEnd = document.querySelector('.list-end');
-      let options = { threshold: 0 };
-      // 觸發時的事件
-      let callback = (entries, observer) => {
-        // 監聽每一個目標元素
-        entries.forEach(entry => {
-          // 口罩藥局的資料
-          const stores = store.getters.getCurrentMaskStores;
+    /**
+     * 可以買口罩的身分證末一碼
+     */
+    const canBuyMaskNum = computed(() => {
+      const today = new Date().getDay();
+      return today % 2 === 0 ? "2、4、6、8、0" : "1、3、5、7、9";
+    })
+
+    // 無限下拉選單的功能
+    const infiniteScroll = () => {
+      const listEnd = document.getElementsByClassName('list-end')[0]; // 監聽對象
+      const options = { threshold: 0 }; // 觸發時機
+
+      const callback = (entries, observer) => { // 觸發時的事件
+        entries.forEach(entry => { // 監聽每一個目標元素
+          const stores = store.getters.getCurrentMaskStores; // 口罩藥局的原始資料
           // 資料長度 > 10
-          if (entry.isIntersecting && stores.length - num > 10 && loading.value === false ) {
-            loading.value = true;
+          if (entry.isIntersecting && stores.length - renderStoresNum > 10 && loadingStatus.value === false ) {
+            loadingStatus.value = true;
             setTimeout(() => {
-              loading.value = false;
-              num += 10;
-              arr.value = stores.slice(0, num);
-            }, 1000);
+              renderStoresNum += 10;
+              renderStoresData.value = stores.slice(0, renderStoresNum);
+              loadingStatus.value = false;
+            }, 500);
           }
 
           // 資料長度 < 10
-          if (entry.isIntersecting && stores.length - num < 10 && loading.value === false) {
-            loading.value = true;
+          if (entry.isIntersecting && stores.length - renderStoresNum < 10 && loadingStatus.value === false) {
+            loadingStatus.value = true;
             setTimeout(() => {
-              loading.value = false;
-              arr.value = stores.slice(0, stores.length - num);
+              renderStoresData.value = stores.slice(0, stores.length - renderStoresNum);
               observer.unobserve(listEnd);
-            }, 1000);
+              loadingStatus.value = false;
+            }, 500);
           }
         })
       }
-      // 綁定觸發的事件與設定
-      let observer = new IntersectionObserver(callback, options)
-      // 綁定監聽的元素
-      observer.observe(listEnd);
-    }
 
-    onMounted(() => {
-      test()
-    })
+      const observer = new IntersectionObserver(callback, options); // 建立監聽者
+      observer.observe(listEnd); // 綁定監聽對象
+    }
 
     /**
      * 篩選口罩類型
      */
     const filterMaskStores = (status) => {
-      filterBtn.value = status;
+      filterBtnStatus.value = status;
       store.dispatch("filterMaskStores", status);
     }
 
@@ -97,31 +109,31 @@ export default {
      * 搜尋關鍵字
      */
     const searchMaskStores = () => {
-      let value = searchText.value;
-
-      // 當搜尋框為 空值
-      if (value === '') { alert('搜尋框不可為空'); return }
-
-      // 當搜尋框輸入 數字、英文、中文 以外的值
+      let value = searchValue.value;
       const regex = /^[a-zA-Z0-9\u4e00-\u9fa5]*$/g;
-      if (!regex.test(value)) { alert('搜尋框只可填入數字、英文、中文'); return }
 
-      // 使用者搜尋 台，直接將它轉成 臺。
+      if (value === '') { errorMsg.value = '搜尋框不可為空'; return }
+      if (!regex.test(value)) { errorMsg.value = '搜尋框只可填入數字、英文、中文，不包含空格'; return }
+
+      errorMsg.value = '';
+
       if (value.includes('台')) value = value.replace('台', '臺');
-
       store.dispatch("searchMaskStores", value);
     }
 
     return {
       sidebarStatus,
-      filterBtn,
-      searchText,
+      sidebarController,
+      filterBtnStatus,
+      searchValue,
       filterMaskStores,
       searchMaskStores,
-      arr,
-      loading,
-      currentDate,
-      canBuyMasksNum
+      renderStoresData,
+      loadingStatus,
+      today,
+      canBuyMaskNum,
+      errorMsg,
+      searchResult
     };
   },
 };
@@ -139,7 +151,7 @@ export default {
       text-white
       border-primary
     "
-    @click="sidebarStatus = true"
+    @click="sidebarController(true)"
   >
     側邊欄
   </div>
@@ -156,13 +168,13 @@ export default {
         >
           <div class="fs-4 fw-bold">
             口罩地圖
-            <span class="fs-8 fw-normal text-gray-500 ms-2">{{ currentDate }}</span>
+            <span class="fs-8 fw-normal text-gray-500 ms-2">{{ today }}</span>
           </div>
           <button
             type="button"
             class="btn-close fs-8"
             aria-label="Close"
-            @click="sidebarStatus = false"
+            @click="sidebarController(false)"
           ></button>
         </div>
         <div class="col-12 mt-1 d-flex mb-4">
@@ -171,7 +183,7 @@ export default {
             <div class="text-primary fs-4 fw-bold mb-1">貼心小提醒</div>
             <div class="text-gray-700 mb-1">今天是身分證末一碼為</div>
             <div class="text-orange mb-1 fs-5">
-              「<span class="text-orange-400 fw-bold">{{ canBuyMasksNum }}</span>」
+              「<span class="text-orange-400 fw-bold">{{ canBuyMaskNum }}</span>」
             </div>
             <div class="text-gray-700 mb-1">的民眾才能購買口罩哦 !</div>
           </div>
@@ -179,20 +191,25 @@ export default {
         <!-- 搜尋與篩選 -->
         <div class="col-12">
           <!-- 搜尋框 -->
-          <div class="input-group flex-nowrap">
-            <input type="text" class="form-control" v-model.trim="searchText" placeholder="搜尋區域 , 地址 , 藥局" aria-describedby="addon-wrapping">
+          <div class="input-group flex-nowrap my-2">
+            <input type="text" class="form-control" v-model.trim="searchValue" @keyup.enter="searchMaskStores" placeholder="搜尋區域 , 地址 , 藥局" aria-describedby="addon-wrapping">
             <span class="input-group-text bg-secondary text-white cursor-pointer" id="addon-wrapping" @click="searchMaskStores">
               <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
               </svg>
             </span>
           </div>
+          <div class="alert alert-warning d-flex align-items-center py-2" role="alert" v-if="errorMsg !== ''">
+            <div class="fs-7 text-danger">
+              {{errorMsg}}
+            </div>
+          </div>
           <!-- 篩選按鈕 -->
           <div class="d-flex mt-3 justify-content-around">
             <button
               type="button"
               class="btn border-secondary"
-              :class="{'btn-active': filterBtn === 'all'}"
+              :class="{'btn-active': filterBtnStatus === 'all'}"
               @click="filterMaskStores('all')"
             >
               所有口罩
@@ -200,7 +217,7 @@ export default {
             <button
               type="button"
               class="btn border-secondary"
-              :class="{'btn-active': filterBtn === 'adult'}"
+              :class="{'btn-active': filterBtnStatus === 'adult'}"
               @click="filterMaskStores('adult')"
             >
               成人口罩
@@ -208,7 +225,7 @@ export default {
             <button
               type="button"
               class="btn border-secondary"
-              :class="{'btn-active': filterBtn === 'child'}"
+              :class="{'btn-active': filterBtnStatus === 'child'}"
               @click="filterMaskStores('child')"
             >
               兒童口罩
@@ -222,13 +239,13 @@ export default {
     <div class="container-fuild p-3 store-group-container">
       <div class="row">
         <div class="col-12">
-          <SidebarStoreCard :maskStores="arr" />
-          <div class="text-center" v-if="loading">
+          <SidebarStoreCard :maskStores="renderStoresData" />
+          <div class="text-center" v-show="loadingStatus">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">loadingStatus...</span>
             </div>
           </div>
-          <div v-if="arr.length === 0 && !loading">這個區域現在沒有資料 (^～^;)</div>
+          <div v-if="searchResult && !loadingStatus">這個區域現在沒有資料 (^～^;)</div>
           <div class="list-end"></div>
         </div>
       </div>
