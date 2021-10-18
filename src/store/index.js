@@ -4,13 +4,16 @@ import axios from "axios";
 export default createStore({
   state: {
     data: {
-      // 地圖用
       origin: [],
-      // 列表總資料
       current: [],
+      render: [],
     },
-    // 錨點定位
+    // 座標
     coordinates: [],
+    // 座標來源
+    coordinatesSource: "",
+    // Sidebar 控制
+    sidebarStatus: false,
   },
   mutations: {
     // 儲存 API 原始值資料
@@ -19,31 +22,33 @@ export default createStore({
     },
     // 篩選 口罩類型的資料
     filterMaskStores(state, status) {
-      switch (status) {
-        case 'all':
-          // return;
-          break;
-        case 'adult':
-          state.data.current = state.data.current.filter((store) => {
-            return store.properties.mask_adult;
-          })
-          break;
-        case 'child':
-          state.data.current = state.data.current.filter((store) => {
-            return store.properties.mask_child;
-          })
-          break;
-      }
+      if (status === 'all') state.data.render = state.data.current;
+
+      if (status === 'adult') state.data.render =
+      state.data.current.filter(store => { return store.properties.mask_adult; })
+
+      if (status === 'child') state.data.render =
+      state.data.current.filter(store => { return store.properties.mask_child; })
     },
     // 搜尋 關鍵字的資料
     searchMaskStores(state, keyword) {
-      state.data.current = state.data.origin.filter((store) => {
+      const currentData = state.data.origin.filter((store) => {
         return store.properties.name.includes(keyword) || store.properties.address.includes(keyword);
-      })
+      });
+      state.data.current = currentData;
+      state.data.render = currentData;
     },
     // 儲存 選擇的座標
     setCoordinates(state, coordinates) {
       state.coordinates = coordinates;
+    },
+    // 儲存 座標的來源
+    setCoordinatesSource(state, source) {
+      state.coordinatesSource = source;
+    },
+    // 更新 sidebar狀態
+    setSidebarStatus(state, status) {
+      state.sidebarStatus = status;
     },
   },
   actions: {
@@ -71,19 +76,39 @@ export default createStore({
     setCoordinates({commit}, coordinates) {
       commit("setCoordinates", coordinates);
     },
+    // 儲存 座標的來源
+    setCoordinatesSource({commit}, source) {
+      commit("setCoordinatesSource", source);
+    },
+    // 變更 sidebar狀態
+    setSidebarStatus({commit}, status) {
+      commit("setSidebarStatus", status);
+    },
   },
   getters: {
-    // 取得所有 領口罩的藥局分布資料
+    // 所有資料
     getOriginMaskStores(state) {
       return state.data.origin;
     },
-    // 取得當前 領口罩的藥局分布資料
+    // 當前資料
     getCurrentMaskStores(state) {
       return state.data.current;
     },
-    // 取得當前 選擇的座標
+    // 篩選資料
+    getRenderMaskStores(state) {
+      return state.data.render;
+    },
+    // 選擇的座標
     getCoordinates(state) {
       return state.coordinates;
+    },
+    // 座標的來源
+    getCoordinatesSource(state) {
+      return state.coordinatesSource;
+    },
+    // sidebar狀態
+    getSidebarStatus(state) {
+      return state.sidebarStatus;
     },
   },
   modules: {
