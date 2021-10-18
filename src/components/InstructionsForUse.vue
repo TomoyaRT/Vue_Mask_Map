@@ -35,33 +35,33 @@ export default {
           <li>
             <span>右上角</span>
             <img src="../assets/icon/locate-icon.svg" width="30" />
-            <span>可以自動定位並搜尋附近藥局</span>
+            <span>自動定位當前位置並搜尋附近藥局</span>
           </li>
-          <li class="mb-2">可以自動定位並搜尋附近藥局</li>
+          <li class="mb-2">點開左方側邊欄，可自定義搜尋口罩的地點</li>
           <li class="mb-2">
             依照藥局的庫存量在地圖上顯示
-            <span class="text-success me-1">不</span>
-            <span class="text-danger me-1">同</span>
-            <span class="text-warning me-1">顏</span>
+            <span class="text-info me-1">不</span>
+            <span class="text-warning me-1">同</span>
+            <span class="text-danger me-1">顏</span>
             <span class="text-white-50 me-1">色</span>
             的標記
             <ul class="mt-1">
-              <li>
+              <li class="mb-1">
                 <img src="../assets/icon/more-icon.svg" width="16" /> 充足
               </li>
-              <li>
+              <li class="mb-1">
                 <img src="../assets/icon/average-icon.svg" width="16" /> 普通
               </li>
-              <li>
+              <li class="mb-1">
                 <img src="../assets/icon/less-icon.svg" width="16" /> 少量
               </li>
-              <li>
+              <li class="mb-1">
                 <img src="../assets/icon/soldout-icon.svg" width="16" /> 售完
               </li>
             </ul>
           </li>
-          <li class="mb-2">略微改善了搜尋方式，以減少載入資料的時間</li>
-          <li>支援手機介面</li>
+          <li class="mb-2">改善地圖圖標的顯示，優化使用者體驗與網頁效能</li>
+          <li>此網站在電腦、平板、手機皆能正常顯示與使用</li>
         </ul>
         <div class="text-center mb-2">
           <button
