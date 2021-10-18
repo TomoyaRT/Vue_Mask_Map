@@ -14,6 +14,7 @@ export default {
             const lng = position.coords.longitude;
 
             store.dispatch("setCoordinates", [lat, lng]);
+            store.dispatch("setCoordinatesSource", "user");
           });
         }
         else
