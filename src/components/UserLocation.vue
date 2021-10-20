@@ -5,27 +5,36 @@ export default {
   setup() {
     const store = useStore();
 
-    const getUserLocaiton = () =>
-      {
-        if (navigator.geolocation)
-        {
-          navigator.geolocation.getCurrentPosition((position) => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
+    const getUserLocaiton = () => {
 
-            store.dispatch("setCoordinates", [lat, lng]);
-            store.dispatch("setCoordinatesSource", "user");
-          });
+      // 先確認使用者裝置能不能抓地點
+      if(navigator.geolocation) {
+
+        // 使用者不提供權限，或是發生其它錯誤
+        const error = () => {
+          alert('無法取得您的位置，請先確認是否開啟地理定位功能');
         }
-        else
-        {
-          alert('當前瀏覽器不支援獲取地理位置的功能');
+
+        // 使用者允許抓目前位置，回傳經緯度
+        const success = (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+
+          store.dispatch("setCoordinates", [lat, lng]);
+          store.dispatch("setCoordinatesSource", "user");
         }
+
+        // 跟使用者拿所在位置的權限
+        navigator.geolocation.getCurrentPosition(success, error);
+
+      } else {
+        alert('很抱歉, 您的裝置不支援地理位置功能。')
       }
+    };
 
     return {
       getUserLocaiton
-    }
+    };
   }
 };
 </script>
