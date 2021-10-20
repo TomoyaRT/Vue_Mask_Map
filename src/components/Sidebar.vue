@@ -6,45 +6,46 @@ import SidebarStoreCard from "../components/SidebarStoreCard.vue";
 
 export default {
   components: {
-    SidebarStoreCard,
+    SidebarStoreCard
   },
   setup() {
     const store = useStore();
-    const filterBtnStatus = ref('all');
-    const searchValue = ref('');
-    const errorMsg = ref('');
+    const filterBtnStatus = ref("all");
+    const searchValue = ref("");
+    const errorMsg = ref("");
     const searchResult = ref(false);
     let renderStoresData = ref([]);
     let renderStoresNum = 0;
     let loadingStatus = ref(false);
     const today = ref(
-    `
+      `
       今天日期是 ${new Date().getFullYear()}
-      年 ${new Date().getMonth()+1}
+      年 ${new Date().getMonth() + 1}
       月 ${new Date().getDate()}
       日
-    `);
+    `
+    );
 
     /**
      * 取得 sidebar狀態
      */
     const sidebarStatus = computed(() => {
       return store.getters.getSidebarStatus;
-    })
+    });
 
     /**
      * sidebar控制器
      */
-    const sidebarController = (status) => {
+    const sidebarController = status => {
       store.dispatch("setSidebarStatus", status);
-    }
+    };
 
-     /**
+    /**
      * 取得 口罩藥局的資料
      */
     const maskStores = computed(() => {
       return store.getters.getRenderMaskStores;
-    })
+    });
 
     // 監聽 口罩藥局的資料
     watch(maskStores, () => {
@@ -53,7 +54,7 @@ export default {
       renderStoresNum = 0; // 重置呈現藥局數量的極限值
       renderStoresData.value = maskStores.value.slice(0, renderStoresNum); // 資料狀態改變時，顯示Loading
       infiniteScroll();
-    })
+    });
 
     /**
      * 可以買口罩的身分證末一碼
@@ -61,18 +62,24 @@ export default {
     const canBuyMaskNum = computed(() => {
       const today = new Date().getDay();
       return today % 2 === 0 ? "2、4、6、8、0" : "1、3、5、7、9";
-    })
+    });
 
     // 無限下拉選單的功能
     const infiniteScroll = () => {
-      const listEnd = document.getElementsByClassName('list-end')[0]; // 監聽對象
+      const listEnd = document.getElementsByClassName("list-end")[0]; // 監聽對象
       const options = { threshold: 0 }; // 觸發時機
 
-      const callback = (entries, observer) => { // 觸發時的事件
-        entries.forEach(entry => { // 監聽每一個目標元素
+      const callback = (entries, observer) => {
+        // 觸發時的事件
+        entries.forEach(entry => {
+          // 監聽每一個目標元素
           const stores = store.getters.getCurrentMaskStores; // 口罩藥局的原始資料
           // 資料長度 > 10
-          if (entry.isIntersecting && stores.length - renderStoresNum > 10 && loadingStatus.value === false ) {
+          if (
+            entry.isIntersecting &&
+            stores.length - renderStoresNum > 10 &&
+            loadingStatus.value === false
+          ) {
             loadingStatus.value = true;
             setTimeout(() => {
               renderStoresNum += 10;
@@ -82,44 +89,70 @@ export default {
           }
 
           // 資料長度 < 10
-          if (entry.isIntersecting && stores.length - renderStoresNum < 10 && loadingStatus.value === false) {
+          if (
+            entry.isIntersecting &&
+            stores.length - renderStoresNum < 10 &&
+            loadingStatus.value === false
+          ) {
             loadingStatus.value = true;
             setTimeout(() => {
-              renderStoresData.value = stores.slice(0, stores.length - renderStoresNum);
+              renderStoresData.value = stores.slice(
+                0,
+                stores.length - renderStoresNum
+              );
               observer.unobserve(listEnd);
               loadingStatus.value = false;
             }, 500);
           }
-        })
-      }
+        });
+      };
 
       const observer = new IntersectionObserver(callback, options); // 建立監聽者
       observer.observe(listEnd); // 綁定監聽對象
-    }
+    };
 
     /**
      * 篩選口罩類型
      */
-    const filterMaskStores = (status) => {
+    const filterMaskStores = status => {
       filterBtnStatus.value = status;
       store.dispatch("filterMaskStores", status);
-    }
+    };
 
     /**
      * 搜尋關鍵字
      */
     const searchMaskStores = () => {
       let value = searchValue.value;
-      const regex = /^[a-zA-Z0-9\u4e00-\u9fa5]*$/g;
+      const regex = /^[0-9\uFF10-\uFF19\u4e00-\u9fa5]*$/g;
 
-      if (value === '') { errorMsg.value = '搜尋框不可為空'; return }
-      if (!regex.test(value)) { errorMsg.value = '搜尋框只可填入數字、英文、中文，不包含空格'; return }
+      if (value === "") { errorMsg.value = "搜尋框不可為空"; return; }
+      if (!regex.test(value)) { errorMsg.value = "搜尋框只可填入數字、中文，不包含空格"; return; }
 
-      errorMsg.value = '';
+      errorMsg.value = "";
 
-      if (value.includes('台')) value = value.replace('台', '臺');
+      if (value.includes("台")) value = value.replace("台", "臺");
+      value = halfToFull(value);
+
       store.dispatch("searchMaskStores", value);
-    }
+    };
+
+    /**
+     * 將字串從半型轉全型
+     */
+    const halfToFull = str => {
+      let len = str.length;
+      let res = [];
+      for (let i = 0; i < len; i++) {
+        let c = str.charCodeAt(i);
+        if (c >= 0x21 && c <= 0x7e) {
+          res.push(String.fromCharCode(c + 65248));
+        } else {
+          res.push(str[i]);
+        }
+      }
+      return res.join("");
+    };
 
     return {
       sidebarStatus,
@@ -135,7 +168,7 @@ export default {
       errorMsg,
       searchResult
     };
-  },
+  }
 };
 </script>
 
@@ -183,7 +216,8 @@ export default {
             <div class="text-primary fs-4 fw-bold mb-1">貼心小提醒</div>
             <div class="text-gray-700 mb-1">今天是身分證末一碼為</div>
             <div class="text-orange mb-1 fs-5">
-              「<span class="text-orange-400 fw-bold">{{ canBuyMaskNum }}</span>」
+              「<span class="text-orange-400 fw-bold">{{ canBuyMaskNum }}</span
+              >」
             </div>
             <div class="text-gray-700 mb-1">的民眾才能購買口罩哦 !</div>
           </div>
@@ -192,16 +226,40 @@ export default {
         <div class="col-12">
           <!-- 搜尋框 -->
           <div class="input-group flex-nowrap my-2">
-            <input type="text" class="form-control" v-model.trim="searchValue" @keyup.enter="searchMaskStores" placeholder="搜尋區域 , 地址 , 藥局" aria-describedby="addon-wrapping">
-            <span class="input-group-text bg-secondary text-white cursor-pointer" id="addon-wrapping" @click="searchMaskStores">
-              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            <input
+              type="text"
+              class="form-control"
+              v-model.trim="searchValue"
+              @keyup.enter="searchMaskStores"
+              placeholder="搜尋區域 , 地址 , 藥局"
+              aria-describedby="addon-wrapping"
+            />
+            <span
+              class="input-group-text bg-secondary text-white cursor-pointer"
+              id="addon-wrapping"
+              @click="searchMaskStores"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="17"
+                fill="currentColor"
+                class="bi bi-search"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+                />
               </svg>
             </span>
           </div>
-          <div class="alert alert-warning d-flex align-items-center py-2" role="alert" v-if="errorMsg !== ''">
+          <div
+            class="alert alert-warning d-flex align-items-center py-2"
+            role="alert"
+            v-if="errorMsg !== ''"
+          >
             <div class="fs-7 text-danger">
-              {{errorMsg}}
+              {{ errorMsg }}
             </div>
           </div>
           <!-- 篩選按鈕 -->
@@ -209,7 +267,7 @@ export default {
             <button
               type="button"
               class="btn border-secondary"
-              :class="{'btn-active': filterBtnStatus === 'all'}"
+              :class="{ 'btn-active': filterBtnStatus === 'all' }"
               @click="filterMaskStores('all')"
             >
               所有口罩
@@ -217,7 +275,7 @@ export default {
             <button
               type="button"
               class="btn border-secondary"
-              :class="{'btn-active': filterBtnStatus === 'adult'}"
+              :class="{ 'btn-active': filterBtnStatus === 'adult' }"
               @click="filterMaskStores('adult')"
             >
               成人口罩
@@ -225,14 +283,13 @@ export default {
             <button
               type="button"
               class="btn border-secondary"
-              :class="{'btn-active': filterBtnStatus === 'child'}"
+              :class="{ 'btn-active': filterBtnStatus === 'child' }"
               @click="filterMaskStores('child')"
             >
               兒童口罩
             </button>
           </div>
         </div>
-
       </div>
     </div>
     <!-- Sidebar 下半部 -->
@@ -245,7 +302,9 @@ export default {
               <span class="visually-hidden">loadingStatus...</span>
             </div>
           </div>
-          <div v-if="searchResult && !loadingStatus">這個區域現在沒有資料 (^～^;)</div>
+          <div v-if="searchResult && !loadingStatus">
+            這個區域現在沒有資料 (^～^;)
+          </div>
           <div class="list-end"></div>
         </div>
       </div>
@@ -273,14 +332,13 @@ export default {
   transform: translateX(-100%);
 }
 .btn-active {
-  background-color: #FD9843;
+  background-color: #fd9843;
   color: #ffffff;
 }
 
 .store-group-container {
   height: calc(100vh - 330px);
   overflow-y: auto;
-
 
   /* width */
   &::-webkit-scrollbar {
