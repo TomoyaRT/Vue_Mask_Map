@@ -23,7 +23,6 @@ export function createPopup(data) {
   `
 }
 
-
 /**
  * 圖標顏色設定
  * @param {String} color
