@@ -60,9 +60,6 @@ export default createStore({
           commit("setMaskStores", res.data.features);
           return res;
         })
-        .catch((err) => {
-          console.error(err.response);
-        })
     },
     // 篩選 口罩類型的資料
     filterMaskStores({commit}, status) {
