@@ -40,7 +40,7 @@ export default {
           <li class="mb-2">點開左方側邊欄，可自定義搜尋口罩的地點</li>
           <li class="mb-2">
             依照藥局的庫存量在地圖上顯示
-            <span class="text-info me-1">不</span>
+            <span class="text-store-name me-1">不</span>
             <span class="text-warning me-1">同</span>
             <span class="text-danger me-1">顏</span>
             <span class="text-white-50 me-1">色</span>
