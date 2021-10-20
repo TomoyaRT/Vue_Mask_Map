@@ -22,7 +22,6 @@ export default {
 </template>
 
 <style lang="scss">
-@import "assets/scss/main.scss";
 * {
   font-family: "Noto Sans TC", sans-serif;
 }
