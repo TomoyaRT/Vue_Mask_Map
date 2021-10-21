@@ -50,7 +50,7 @@
 #### 特色一
 - 點選藥局卡片的icon，直接飛越到目標藥局的位置。
 
-![Fly To Position](https://i.imgur.com/fn53L2R.gifv)
+![Fly To Position](https://imgur.com/fn53L2R)
 
 #### 特色二
 - 捕捉使用者當前地理位置，並自動搜尋該區域的資料，顯示與藥局的距離。
