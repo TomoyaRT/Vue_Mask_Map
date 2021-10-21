@@ -42,9 +42,10 @@ export default {
 <template>
   <img
     @click="getUserLocaiton"
-    src="../assets/icon/locate-icon.svg"
+    src="@/assets/icon/locate-icon.svg"
     width="60"
     class="location position-fixed top-1 end-1 top-sm-2 end-sm-2 end-md-3"
+    alt="取得使用者地理位置的圖示"
   />
 </template>
 

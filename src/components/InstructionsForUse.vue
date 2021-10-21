@@ -34,7 +34,7 @@ export default {
         <ul>
           <li>
             <span>右上角</span>
-            <img src="../assets/icon/locate-icon.svg" width="30" />
+            <img src="@/assets/icon/locate-icon.svg" width="30" />
             <span>自動定位當前位置並搜尋附近藥局</span>
           </li>
           <li class="mb-2">點開左方側邊欄，可自定義搜尋口罩的地點</li>
@@ -47,16 +47,16 @@ export default {
             的標記
             <ul class="my-2 ps-4">
               <li class="mb-1">
-                <img src="../assets/icon/more-icon.svg" width="16" /> 非常充足 (3000以上)
+                <img src="@/assets/icon/more-icon.svg" width="16" /> 非常充足 (3000以上)
               </li>
               <li class="mb-1">
-                <img src="../assets/icon/average-icon.svg" width="16" /> 普通 (2000-3000)
+                <img src="@/assets/icon/average-icon.svg" width="16" /> 普通 (2000-3000)
               </li>
               <li class="mb-1">
-                <img src="../assets/icon/less-icon.svg" width="16" /> 少量 (1000-2000)
+                <img src="@/assets/icon/less-icon.svg" width="16" /> 少量 (1000-2000)
               </li>
               <li class="mb-1">
-                <img src="../assets/icon/soldout-icon.svg" width="16" /> 稀少 (1000以下)
+                <img src="@/assets/icon/soldout-icon.svg" width="16" /> 稀少 (1000以下)
               </li>
             </ul>
           </li>
