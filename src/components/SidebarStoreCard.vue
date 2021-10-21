@@ -1,6 +1,7 @@
 <script>
-import { computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
+import L from "leaflet";
 
 export default {
   props: {
@@ -11,6 +12,10 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const showStoreDistance = ref(false);
+    let userLatlng = {};
+
+    // 監聽父層的口罩資料是否有變動
     const stores = computed(() => {
       return props.maskStores;
     })
@@ -22,9 +27,32 @@ export default {
       store.dispatch("setSidebarStatus", false);
     };
 
+    // 監聽 user經緯度
+    const userCoordinates = computed(() => {
+      return store.getters.getCoordinates;
+    })
+
+    // 當user經緯度 有變動時
+    watch(userCoordinates, (nVal, oVal) => {
+      if (nVal !== oVal && nVal !== []) {
+        userLatlng.lat = userCoordinates.value[0];
+        userLatlng.lng = userCoordinates.value[1];
+        showStoreDistance.value = true;
+      }
+    })
+
+    // 計算當前位置 與 藥局的距離
+    const calculatedDistance = ({ latlng }) => {
+      const distance = Math.round(L.CRS.Earth.distance(userLatlng, latlng));
+      if (distance < 1000) return `${distance} 公尺`;
+      return `${(distance / 1000).toFixed(1)} 公里`;
+    }
+
     return {
       stores,
       flyToCoordinates,
+      calculatedDistance,
+      showStoreDistance
     };
   },
 };
@@ -42,88 +70,41 @@ export default {
     v-for="store in stores"
     :key="store.properties.id"
   >
+    <!-- 飛越地點的icon -->
     <span class="position-absolute top-1 end-1">
-      <svg
-        @click="
-          flyToCoordinates(
-            store.geometry.coordinates[1],
-            store.geometry.coordinates[0]
-          )
-        "
-        xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="25"
-        fill="currentColor"
-        class="bi bi-geo-alt-fill location-icon-color"
-        viewBox="0 0 16 16"
-      >
-        <path
-          d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
-        />
-      </svg>
+      <i
+        class="bi bi-geo-alt-fill location-icon"
+        @click="flyToCoordinates(
+          store.geometry.coordinates[1],
+          store.geometry.coordinates[0]
+        )">
+      </i>
     </span>
 
     <div class="row">
       <div class="col-12 px-4"></div>
+      <!-- 藥局名稱 -->
       <div class="col-12 fs-3 text-store-name fw-bold px-4 pb-2 pt-3">
         {{ store.properties.name }}
       </div>
+      <!-- 藥局的距離 -->
+      <div class="col-12 px-4 pb-2" v-if="showStoreDistance">
+        <i class="bi bi-cursor text-gray-600"></i>
+        <span class="ms-2 text-gray-600 fs-7">
+          {{ calculatedDistance({latlng: {lat: store.geometry.coordinates[1],lng: store.geometry.coordinates[0]} }) }}
+        </span>
+      </div>
+      <!-- 藥局電話 -->
       <div class="col-12 px-4 pb-2">
-        <svg
-          data-v-ca0da258=""
-          viewBox="0 0 16 16"
-          width="1em"
-          height="1em"
-          focusable="false"
-          role="img"
-          alt="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          class="bi-phone align-middle b-icon bi text-gray-600"
-        >
-          <g data-v-ca0da258="">
-            <path
-              fill-rule="evenodd"
-              d="M11 1H5a1 1 0 00-1 1v12a1 1 0 001 1h6a1 1 0 001-1V2a1 1 0 00-1-1zM5 0a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V2a2 2 0 00-2-2H5z"
-              clip-rule="evenodd"
-            ></path>
-            <path
-              fill-rule="evenodd"
-              d="M8 14a1 1 0 100-2 1 1 0 000 2z"
-              clip-rule="evenodd"
-            ></path>
-          </g>
-        </svg>
+        <i class="bi bi-telephone text-gray-600"></i>
         <span class="ms-2 text-gray-600 fs-7">{{ store.properties.phone }}</span>
       </div>
+      <!-- 藥局地址 -->
       <div class="col-12 px-4 pb-2">
-        <svg
-          data-v-ca0da258=""
-          viewBox="0 0 16 16"
-          width="1em"
-          height="1em"
-          focusable="false"
-          role="img"
-          alt="icon"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="currentColor"
-          class="bi-house align-middle b-icon bi text-gray-600"
-        >
-          <g data-v-ca0da258="">
-            <path
-              fill-rule="evenodd"
-              d="M2 13.5V7h1v6.5a.5.5 0 00.5.5h9a.5.5 0 00.5-.5V7h1v6.5a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 012 13.5zm11-11V6l-2-2V2.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5z"
-              clip-rule="evenodd"
-            ></path>
-            <path
-              fill-rule="evenodd"
-              d="M7.293 1.5a1 1 0 011.414 0l6.647 6.646a.5.5 0 01-.708.708L8 2.207 1.354 8.854a.5.5 0 11-.708-.708L7.293 1.5z"
-              clip-rule="evenodd"
-            ></path>
-          </g>
-        </svg>
+        <i class="bi bi-house-door text-gray-600"></i>
         <span class="ms-2 text-gray-600 fs-7">{{ store.properties.address }}</span>
       </div>
+      <!-- 藥局口罩數 -->
       <div class="col-12">
         <div class="bg-mask-num store-card-bottom-border-radius">
           <span
@@ -168,8 +149,9 @@ export default {
 .store-card-bottom-padding {
   padding: 0.8rem 0;
 }
-.location-icon-color {
-  cursor: pointer;
+.location-icon {
+  font-size: 1.5rem;
   color: #ffc107;
+  cursor: pointer;
 }
 </style>
