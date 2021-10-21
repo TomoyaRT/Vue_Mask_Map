@@ -44,7 +44,7 @@ const iconColor = color =>
  * @returns
  */
 export function iconFilter(store) {
-  if (store === undefined) return iconColor('user');
+  if (store === 'user') return iconColor('user');
   const adult = store.properties.mask_adult;
   const child = store.properties.mask_child;
 

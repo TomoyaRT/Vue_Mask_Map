@@ -90,7 +90,7 @@ export default {
           if (!userPositionSave) {
             markerData
               .addLayer(
-                L.marker(coordinates.value, { icon: iconFilter() }).bindPopup(
+                L.marker(coordinates.value, { icon: iconFilter('user') }).bindPopup(
                   "現在位置"
                 )
               )
