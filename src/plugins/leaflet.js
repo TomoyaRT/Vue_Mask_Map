@@ -13,8 +13,8 @@ export function createPopup(data) {
     <p class="fs-8 m-0 mb-1">備註 | ${data.properties.note}</p>
     <p class="fs-8 m-0 mb-2 text-gray-500">資訊更新於 ${data.properties.updated} 天前</p>
     <div class="d-flex mb-2 justify-content-between">
-      <button type="button" class="btn btn-secondary me-1 text-white w-475">成人口罩 ${data.properties.mask_adult} 個</button>
-      <button type="button" class="btn btn-secondary text-white w-475">兒童口罩 ${data.properties.mask_child} 個</button>
+      <button type="button" class="btn btn-secondary text-white">成人口罩 ${data.properties.mask_adult} 個</button>
+      <button type="button" class="btn btn-secondary text-white">兒童口罩 ${data.properties.mask_child} 個</button>
     </div>
     <a href="https://www.google.com/search?q=${data.properties.name}" target="_blank"
       class="btn btn-primary text-white w-100 mb-2"> Google 關鍵字搜尋
