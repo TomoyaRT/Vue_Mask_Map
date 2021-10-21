@@ -1,7 +1,7 @@
 <h1 align="center">
   <a href="https://tomoyart.github.io/Vue_Mask_Map/">
     <img
-      src="https://img.icons8.com/flat-round/64/000000/protection-mask.png"
+      src="https://i.imgur.com/TUag8pB.png"
       alt="Mask Map"
       width="200"
     />
@@ -54,7 +54,7 @@
 
 #### 特色二
 - 捕捉使用者當前地理位置，並自動搜尋該區域的資料，顯示與藥局的距離。
-
+<div>Icons made by <a href="https://www.flaticon.com/authors/smalllikeart" title="smalllikeart">smalllikeart</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 ![Coupon jigsaw puzzle game imgur](https://i.imgur.com/SZP74Dc.gif)
 
 #### 特色三
