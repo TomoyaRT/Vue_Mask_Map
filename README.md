@@ -47,16 +47,16 @@
 
 ### 網站特色
 
-#### 特色一
-- 點選藥局卡片的icon，直接飛越到目標藥局的位置。
+#### 直覺式的飛越功能
+- 點選藥局卡片的icon，直接移動到目標藥局的位置。
 ![Fly To Position](https://github.com/TomoyaRT/Vue_Mask_Map/blob/6086016b196fc720cc6d1ae00a1fce19c96a0997/FlyToPosition.gif)
 
-#### 特色二
+#### 捕捉位置、自動搜尋、顯示距離
 - 捕捉使用者當前地理位置，並自動搜尋該區域的資料，顯示與藥局的距離。
 <div>Icons made by <a href="https://www.flaticon.com/authors/smalllikeart" title="smalllikeart">smalllikeart</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 ![Coupon jigsaw puzzle game imgur](https://i.imgur.com/SZP74Dc.gif)
 
-#### 特色三
+#### 圖標整合提升效能
 - 將地圖圖標整合成群組，並顯示該區域的數量與範圍，進而提升網站效能與使用者體驗。
 ![Markers To Number](https://github.com/TomoyaRT/Vue_Mask_Map/blob/d314a33acaffb4151843ccddb083a5286b114faa/MarkersToNum.gif)
 
