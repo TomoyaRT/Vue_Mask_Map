@@ -17,7 +17,7 @@
 
 <p align="center">
   <a  href="https://tomoyart.github.io/Vue_Mask_Map/">
-    <img src="https://img.shields.io/badge/Demo-MaskMap-blueviolet">
+    <img src="https://img.shields.io/badge/Demo-MaskMap-blue">
   </a>
 </p>
 
@@ -41,8 +41,8 @@
 |  前端框架  |               Vue/Vuex               |
 |  地圖套件  |               Leaflet                |
 |  部署環境  |               GitHub Page            |
-| 第三方 API | 健保特約機構口罩剩餘數量明細清單 API |
-| 第三方 API | OpenStreetMap API |
+| 第三方 API | 健保特約機構口罩剩餘數量明細清單 |
+| 第三方 API | OpenStreetMap |
 
 
 ### 網站特色
