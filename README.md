@@ -53,7 +53,7 @@
 
 #### 捕捉位置、顯示距離
 - 捕捉使用者當前地理位置，並顯示與目標藥局的距離。
-![Markers To Number](https://github.com/TomoyaRT/Vue_Mask_Map/blob/d314a33acaffb4151843ccddb083a5286b114faa/MarkersToNum.gif)
+![User Position](https://github.com/TomoyaRT/Vue_Mask_Map/blob/258421b06d6ae0140cc4b2892886f9d8a607d0f2/userPosition.gif)
 
 #### 圖標整合提升效能
 - 將地圖圖標整合成群組，並顯示該區域的數量與範圍，進而提升網站效能與使用者體驗。
