@@ -50,7 +50,7 @@
 #### 特色一
 - 點選藥局卡片的icon，直接飛越到目標藥局的位置。
 
-![Products nutrition display imgur](https://i.imgur.com/KRGqaPJ.gif)
+![Fly To Position](https://i.imgur.com/KRGqaPJ.gifv)
 
 #### 特色二
 - 捕捉使用者當前地理位置，並自動搜尋該區域的資料，顯示與藥局的距離。
@@ -60,7 +60,7 @@
 #### 特色三
 - 將地圖圖標整合成群組，並顯示該區域的數量與範圍，進而提升網站效能與使用者體驗。
 
-![Credit Card imgur](https://i.imgur.com/01u89L6.gifv)
+![Markers To Number](https://i.imgur.com/01u89L6.gifv)
 
 ## 專案架構
 ```
