@@ -49,7 +49,8 @@
 
 #### 特色一
 - 點選藥局卡片的icon，直接飛越到目標藥局的位置。
-
+[Imgur](https://i.imgur.com/fn53L2R.gifv)
+![Imgur](https://i.imgur.com/fn53L2R.gifv)
 ![Fly To Position](https://imgur.com/fn53L2R)
 
 #### 特色二
