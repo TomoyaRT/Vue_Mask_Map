@@ -49,7 +49,7 @@
 
 #### 特色一
 - 點選藥局卡片的icon，直接飛越到目標藥局的位置。
-![Fly To Position](https://drive.google.com/file/d/1C_eKXpYnryra713TCJoIP_kua4YjBRAQ/view?usp=sharing)
+![Fly To Position](https://github.com/TomoyaRT/Vue_Mask_Map/blob/6086016b196fc720cc6d1ae00a1fce19c96a0997/FlyToPosition.gif)
 
 #### 特色二
 - 捕捉使用者當前地理位置，並自動搜尋該區域的資料，顯示與藥局的距離。
