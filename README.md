@@ -52,6 +52,9 @@
 [Imgur](https://i.imgur.com/fn53L2R.gifv)
 ![Imgur](https://i.imgur.com/fn53L2R.gifv)
 ![Fly To Position](https://imgur.com/fn53L2R)
+![Fly To Position](https://i.imgur.com/fn53L2R.gifv)
+![Fly To Position](https://i.imgur.com/fn53L2R.gif)
+[img]https://i.imgur.com/fn53L2R.gif[/img]
 
 #### 特色二
 - 捕捉使用者當前地理位置，並自動搜尋該區域的資料，顯示與藥局的距離。
