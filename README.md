@@ -58,8 +58,7 @@
 
 #### 特色三
 - 將地圖圖標整合成群組，並顯示該區域的數量與範圍，進而提升網站效能與使用者體驗。
-
-![Markers To Number](https://i.imgur.com/01u89L6.gifv)
+![Markers To Number](https://github.com/TomoyaRT/Vue_Mask_Map/blob/d314a33acaffb4151843ccddb083a5286b114faa/MarkersToNum.gif)
 
 ## 專案架構
 ```
